@@ -8,7 +8,7 @@ const NavBar = () => {
   return (
     <Menu inverted fixed='top'>
         <Container>
-            <Menu.Item header>
+            <Menu.Item  header>
                 <img src="/assets/logo.png" alt="logo" style={{ marginRight: '30px' }} />
                 .NET Actividades
             </Menu.Item>
