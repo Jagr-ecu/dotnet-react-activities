@@ -13,20 +13,24 @@ function App() {
 
   return (
     <>
-      <Container style={{ marginTop: "7em" }}>
-        <Routes>
-          <Route path='/' element={<Homepage />} />
-          <Route element={<><NavBar /><Outlet /></>}>
-            <Route path='/actividades' element={<ActivityDashboard />} />
-            <Route path='/actividades/:id' element={<ActivityDetails />} />
-            {["/crear-actividad", "/administrar/:id"].map((path) => {
-                return (
-                  <Route key={location.key} path={path} element={<ActivityForm key={location.key}/>} />
-                );
-            })}
-          </Route>
-        </Routes>
-      </Container>
+      <Routes>
+        <Route path='/' element={<Homepage />} />
+        <Route 
+          element={
+            <Container style={{ marginTop: '4em' }}>
+              <NavBar /><Outlet />
+            </Container>
+          }
+          >
+          <Route path='/actividades' element={<ActivityDashboard />} />
+          <Route path='/actividades/:id' element={<ActivityDetails />} />
+          {["/crear-actividad", "/administrar/:id"].map((path) => {
+              return (
+                <Route key={location.key} path={path} element={<ActivityForm key={location.key}/>} />
+              );
+          })}
+        </Route>
+      </Routes>
     </>
   );
 }
