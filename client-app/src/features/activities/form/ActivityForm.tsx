@@ -1,25 +1,35 @@
 import { observer } from "mobx-react-lite";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Button, Form, Segment } from "semantic-ui-react";
+import { v4 as uuid } from "uuid";
+import { useNavigate, Link } from 'react-router-dom';
 
 import { useStore } from '../../../app/stores/store';
+import { useParams } from 'react-router-dom';
+import { Activity } from '../../../app/models/Activity';
+import LoadingComponent from "../../../app/layout/LoadingComponent";
 
 
 const ActivityForm = () => {
+  const navigate = useNavigate();
   const { activityStore } = useStore();
-  const { selectedActivity, closeForm, createActivity, updateActivity, loading } = activityStore;
+  const { createActivity, updateActivity, loading, loadActivity, loadingInitial } = activityStore;
 
-  const initialState = selectedActivity ?? {
-    id: "",
+  const { id } = useParams<{id: string}>();
+
+  const [activity, setActivity] = useState<Activity>({
+    id: '',
     description: '',
     title: '',
-    category: "",
-    date: "",
-    city: "",
-    venue: "",
-  };
+    category: '',
+    date: '',
+    city: '',
+    venue: '',
+  });
 
-  const [activity, setActivity] = useState(initialState);
+  useEffect(() => {
+    if (id) loadActivity(id).then(activity => setActivity(activity!));
+  }, [id, loadActivity]);
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = event.target;
@@ -27,8 +37,18 @@ const ActivityForm = () => {
   };
 
   const handleSubmit = () => {
-    activity.id ? updateActivity(activity) : createActivity(activity);
+    if (activity.id.length === 0) {
+      let newActivity = {
+        ...activity,
+        id: uuid()
+      };
+      createActivity(newActivity).then(() => navigate(`/actividades/${newActivity.id}`));
+    } else {
+      updateActivity(activity).then(() => navigate(`/actividades/${activity.id}`));
+    }
   };
+
+  if(loadingInitial) return <LoadingComponent content="Cargando Actividad..."/>
 
   return (
     <Segment clearing>
@@ -72,7 +92,8 @@ const ActivityForm = () => {
         />
         <Button floated="right" positive type="submit" loading={loading} content="Enviar" />
         <Button
-          onClick={closeForm}
+          as={Link}
+          to='/actividades'
           floated="right"
           type="button"
           content="Cancelar"
