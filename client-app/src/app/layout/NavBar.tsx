@@ -11,6 +11,7 @@ const NavBar = () => {
                 .NET Actividades
             </Menu.Item>
             <Menu.Item as={NavLink} to='/actividades' name="Actividades" />
+            <Menu.Item as={NavLink} to='/errores' name="Errores" />
             <Menu.Item>
                 <Button as={NavLink} to='/crear-actividad' positive content='Crear Actividad' />
             </Menu.Item>
