@@ -1,28 +1,28 @@
-import { observer } from 'mobx-react-lite';
-import React from 'react'
-import { Button, Header, Item, Segment, Image } from 'semantic-ui-react'
-import { Activity } from '../../../app/models/Activity';
+import { format } from "date-fns";
+import { observer } from "mobx-react-lite";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Button, Header, Item, Segment, Image } from "semantic-ui-react";
+import { Activity } from "../../../app/models/Activity";
 
 const activityImageStyle = {
-    filter: 'brightness(30%)'
+    filter: "brightness(30%)",
 };
 
 const activityImageTextStyle = {
-    position: 'absolute',
-    bottom: '5%',
-    left: '5%',
-    width: '100%',
-    height: 'auto',
-    color: 'white'
+    position: "absolute",
+    bottom: "5%",
+    left: "5%",
+    width: "100%",
+    height: "auto",
+    color: "white",
 };
 
 interface Props {
-    activity: Activity
+    activity: Activity;
 }
 
 const ActivityDetailedHeader = ({ activity }: Props) => {
-
-
     return (
         <Segment.Group>
             <Segment basic attached="top" style={{ padding: "0" }}>
@@ -40,7 +40,7 @@ const ActivityDetailedHeader = ({ activity }: Props) => {
                                     content={activity.title}
                                     style={{ color: "white" }}
                                 />
-                                <p>{activity.date}</p>
+                                <p>{format(activity.date!, 'dd MM yyyy')}</p>
                                 <p>
                                     Organizado por <strong>Bob</strong>
                                 </p>
@@ -52,7 +52,12 @@ const ActivityDetailedHeader = ({ activity }: Props) => {
             <Segment clearing attached="bottom">
                 <Button color="teal">Unirse a Actividad</Button>
                 <Button>Cancelar Asistencia</Button>
-                <Button color="orange" floated="right">
+                <Button
+                    as={Link}
+                    to={`/administrar/${activity.id}`}
+                    color="orange"
+                    floated="right"
+                >
                     Administrar Evento
                 </Button>
             </Segment>
