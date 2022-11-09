@@ -13,6 +13,7 @@ using Persistence;
 
 namespace API.Extensions
 {
+    //es estatico porque es un metodo de extension (services)
     public static class ApplicationServiceExtensions
     {
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, 
