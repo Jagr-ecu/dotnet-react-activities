@@ -53,22 +53,24 @@ const ActivityForm = () => {
    // };
 
    const handleFormSubmit = (activity: Activity) => {
-     if (activity.id.length === 0) {
-       let newActivity = {
-         ...activity,
-         id: uuid()
-       };
-       createActivity(newActivity).then(() => navigate(`/actividades/${newActivity.id}`));
-     } else {
-       updateActivity(activity).then(() => navigate(`/actividades/${activity.id}`));
-     }
+      if (activity.id.length === 0) {
+         let newActivity = {
+            ...activity,
+            id: uuid(),
+         };
+         createActivity(newActivity).then(() =>
+            navigate(`/actividades/${newActivity.id}`)
+         );
+      } else {
+         updateActivity(activity).then(() => navigate(`/actividades/${activity.id}`));
+      }
    };
 
    if (loadingInitial) return <LoadingComponent content="Cargando Actividad..." />;
 
    return (
       <Segment clearing>
-          <Header content='Detalles de la Actividad' sub color="teal" />
+         <Header content="Detalles de la Actividad" sub color="teal" />
          <Formik
             validationSchema={validationSchema}
             enableReinitialize
@@ -89,9 +91,9 @@ const ActivityForm = () => {
                      name="date"
                      showTimeSelect
                      timeCaption="time"
-                     dateFormat='MMMM d, yyyy h:mm aa'
+                     dateFormat="MMMM d, yyyy h:mm aa"
                   />
-                  <Header content='Detalles de ubicación' sub color="teal" />
+                  <Header content="Detalles de ubicación" sub color="teal" />
                   <MyTextInput placeholder="Ciudad" name="city" />
                   <MyTextInput placeholder="Lugar" name="venue" />
                   <Button
