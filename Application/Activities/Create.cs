@@ -4,16 +4,18 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Persistence;
 
 namespace Application.Activities
 {
     public class Create
     {
-        public class Command : IRequest<Result<Unit>>//Unit: where are not returning anythin
+        public class Command : IRequest<Result<Unit>>//se pone Unit porque no se retorna nada
         {
             public Activity Activity { get; set; }
         }
@@ -29,14 +31,28 @@ namespace Application.Activities
         public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
+            private readonly IUserAccessor _userAccessor;
 
-            public Handler(DataContext context)
+            public Handler(DataContext context, IUserAccessor userAccessor)
             {
                 this._context = context;
+                this._userAccessor = userAccessor;
             }
 
             public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
+                var user = await _context.Users.FirstOrDefaultAsync(x => 
+                    x.UserName == _userAccessor.GetUsername());
+                
+                var attendee = new ActivityAttendee
+                {
+                    AppUser = user,
+                    Activity = request.Activity,
+                    IsHost = true
+                };
+
+                request.Activity.Attendees.Add(attendee);
+
                 _context.Activities.Add(request.Activity);
                 //si el numero de cambios es mayor a 0
                 var result = await _context.SaveChangesAsync() > 0;

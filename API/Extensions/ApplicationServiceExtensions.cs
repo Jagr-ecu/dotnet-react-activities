@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Activities;
 using Application.Core;
+using Application.Interfaces;
+using Infrastructure.Security;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -34,8 +36,12 @@ namespace API.Extensions
                     policy.AllowAnyMethod().AllowAnyHeader().WithOrigins("http://localhost:3000");
                 });
             });
-            services.AddMediatR(typeof(List.Handler).Assembly);//tells where to find our handlers
+            //tells where to find our handlers
+            services.AddMediatR(typeof(List.Handler).Assembly);
             services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+            //con este servicio podremos obtener el username del usuario logeado desde cualquier 
+            //parte de la aplicacion
+            services.AddScoped<IUserAccessor, UserAccessor>();
 
             return services;
         }
