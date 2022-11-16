@@ -14,6 +14,7 @@ namespace Domain
         public string Category { get; set; }
         public string City { get; set; }
         public string Venue { get; set; }
+        public bool IsCancelled { get; set; }
         //se le asigna una lista para asegurarse de no tener una referencia vieja cuando 
         //se intenta agregar algo a esta coleccion
         //porque si es null como se puede agregar algo

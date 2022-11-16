@@ -39,6 +39,7 @@ namespace API
                 opt.Filters.Add(new AuthorizeFilter(policy));
             }).AddFluentValidation(config => 
                 {
+                    //para validaciones
                     //solo necesitamos hacer esto una vez for todos los handlers
                     config.RegisterValidatorsFromAssemblyContaining<Create>();
                 });
