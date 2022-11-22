@@ -8,7 +8,7 @@ import * as Yup from "yup";
 
 import { useStore } from "../../../app/stores/store";
 import { useParams } from "react-router-dom";
-import { Activity } from "../../../app/models/Activity";
+import { Activity, ActivityFormValues } from '../../../app/models/Activity';
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import MyTextInput from "../../../app/common/form/MyTextInput";
 import MyTextArea from "../../../app/common/form/MyTextArea";
@@ -24,15 +24,7 @@ const ActivityForm = () => {
 
    const { id } = useParams<{ id: string }>();
 
-   const [activity, setActivity] = useState<Activity>({
-      id: "",
-      title: "",
-      description: "",
-      category: "",
-      date: null,
-      city: "",
-      venue: "",
-   });
+   const [activity, setActivity] = useState<ActivityFormValues>(new ActivityFormValues());
 
    const validationSchema = Yup.object({
       title: Yup.string().required("El titulo de la actividad es requerida"),
@@ -44,7 +36,7 @@ const ActivityForm = () => {
    });
 
    useEffect(() => {
-      if (id) loadActivity(id).then((activity) => setActivity(activity!));
+      if (id) loadActivity(id).then(activity => setActivity(new ActivityFormValues(activity)))
    }, [id, loadActivity]);
 
    // const handleInputChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -52,8 +44,8 @@ const ActivityForm = () => {
    //   setActivity({ ...activity, [name]: value });
    // };
 
-   const handleFormSubmit = (activity: Activity) => {
-      if (activity.id.length === 0) {
+   const handleFormSubmit = (activity: ActivityFormValues) => {
+      if (!activity.id) {
          let newActivity = {
             ...activity,
             id: uuid(),
@@ -100,7 +92,7 @@ const ActivityForm = () => {
                      floated="right"
                      positive
                      type="submit"
-                     loading={loading}
+                     loading={isSubmitting}
                      content="Enviar"
                      disabled={isSubmitting || !dirty || !isValid}
                   />

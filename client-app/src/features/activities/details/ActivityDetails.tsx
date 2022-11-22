@@ -9,6 +9,7 @@ import ActivityDetailedHeader from './ActivityDetailedHeader';
 import ActivityDetailedSidebar from "./ActivityDetailedSidebar";
 import ActivityDetailedChat from "./ActivityDetailedChat";
 import ActivityDetailedInfo from "./ActivityDetailedInfo";
+import { Activity } from '../../../app/models/Activity';
 
 
 const ActivityDetails = () => {
@@ -30,7 +31,7 @@ const ActivityDetails = () => {
         <ActivityDetailedChat />
       </Grid.Column>
       <Grid.Column width={6}>
-        <ActivityDetailedSidebar />
+        <ActivityDetailedSidebar activity={activity}/>
       </Grid.Column>
     </Grid>
   );
