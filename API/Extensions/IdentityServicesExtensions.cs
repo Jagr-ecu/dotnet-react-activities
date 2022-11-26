@@ -45,7 +45,8 @@ namespace API.Extensions
             
             services.AddAuthorization(opt => 
             {
-                //añade verficacion de si usuario es creador de actividad
+                //añade autorizacion de si usuario es creador de actividad que se lo puede usar en los
+                //controladores
                 opt.AddPolicy("IsActivityHost", policy => 
                 {
                     policy.Requirements.Add(new IsHostRequirement());

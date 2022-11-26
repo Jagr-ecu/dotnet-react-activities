@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
+    //se usa para acceder a la base de datos
     public class DataContext : IdentityDbContext<AppUser>
     {
         public DataContext(DbContextOptions options) : base(options)
@@ -16,6 +17,8 @@ namespace Persistence
 
         public DbSet<Activity> Activities { get; set; }
         public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
+        public DbSet<Photo> Photos { get; set; }
+
 
         //configuracion de relacion de muchos a muchos
         //se realiza este metodo porque creamos una tabla de relacion de manera manual
