@@ -28,5 +28,6 @@ COMANDOS ENTITY
 -   dotnet ef migrations add <NombreDeAccion> -p <Proyectode DataContext> -s <Proyectodearchivo start.cs>
 -   dotnet ef migrations add <NombreDeAccion> -p <Persistence> -s <API>
 
-
+REACT
+-   la función de flecha se enlaza automaticamente con la clase
 

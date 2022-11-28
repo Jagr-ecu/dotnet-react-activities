@@ -11,7 +11,7 @@ const LoginForm = () => {
 
    return (
       <Formik
-         initialValues={{ email: "", password: "", error: null }}
+         initialValues={{ email: "start@test.com", password: "Contraseña_1", error: null }}
          onSubmit={(values, { setErrors }) =>
             userStore
                .login(values)

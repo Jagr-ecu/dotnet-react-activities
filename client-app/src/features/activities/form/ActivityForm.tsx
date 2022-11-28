@@ -8,7 +8,7 @@ import * as Yup from "yup";
 
 import { useStore } from "../../../app/stores/store";
 import { useParams } from "react-router-dom";
-import { Activity, ActivityFormValues } from '../../../app/models/Activity';
+import { ActivityFormValues } from '../../../app/models/Activity';
 import LoadingComponent from "../../../app/layout/LoadingComponent";
 import MyTextInput from "../../../app/common/form/MyTextInput";
 import MyTextArea from "../../../app/common/form/MyTextArea";
@@ -19,7 +19,7 @@ import MyDateInput from "../../../app/common/form/MyDateInput";
 const ActivityForm = () => {
    const navigate = useNavigate();
    const { activityStore } = useStore();
-   const { createActivity, updateActivity, loading, loadActivity, loadingInitial } =
+   const { createActivity, updateActivity, loadActivity, loadingInitial } =
       activityStore;
 
    const { id } = useParams<{ id: string }>();
