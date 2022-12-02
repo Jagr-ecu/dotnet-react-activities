@@ -41,6 +41,25 @@ namespace API.Extensions
                         ValidateIssuer = false,
                         ValidateAudience = false,
                     };
+                    //para signalR
+                    //allows us to get the token from our query string that we send up with our signalR
+                    //connection
+                    opt.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context => 
+                        {
+                            //the client side of signalR is goint to pass our token in a query
+                            //and the key is access_token
+                            var accessToken = context.Request.Query["access_token"];
+                            var path = context.HttpContext.Request.Path;
+                            //if the path matches the endpoint for signalR
+                            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/chat"))
+                            {
+                                context.Token = accessToken;
+                            }
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
             
             services.AddAuthorization(opt => 

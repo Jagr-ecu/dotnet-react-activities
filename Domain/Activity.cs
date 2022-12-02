@@ -19,5 +19,6 @@ namespace Domain
         //se intenta agregar algo a esta coleccion
         //porque si es null como se puede agregar algo
         public ICollection<ActivityAttendee> Attendees { get; set; } = new List<ActivityAttendee>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

@@ -30,4 +30,8 @@ COMANDOS ENTITY
 
 REACT
 -   la función de flecha se enlaza automaticamente con la clase
+-   array.unshift añade item al inicio del arreglo
 
+.NET
+-   SignalR (web sockets) no tiene la habilidad de enviar un header de autorizacion
+-   cors: Access-Control-Allow-Credentials para SignalR

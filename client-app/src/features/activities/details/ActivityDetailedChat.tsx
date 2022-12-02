@@ -1,61 +1,100 @@
-import { observer } from 'mobx-react-lite'
-import React from 'react'
-import {Segment, Header, Comment, Form, Button} from 'semantic-ui-react'
+import { observer } from "mobx-react-lite";
+import { Segment, Header, Comment, Loader } from "semantic-ui-react";
+import { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { Field, FieldProps, Form, Formik } from "formik";
+import * as Yup from "yup";
 
+import { es } from 'date-fns/locale';
+import { formatDistanceToNow } from "date-fns";
+import { useStore } from "../../../app/stores/store";
 
-const ActivityDetailedChat = () => {
-  return (
-    <>
-        <Segment
-            textAlign='center'
-            attached='top'
-            inverted
-            color='teal'
-            style={{border: 'none'}}
-        >
-            <Header>Conversa sobre este evento</Header>
-        </Segment>
-        <Segment attached>
-            <Comment.Group>
-                <Comment>
-                    <Comment.Avatar src='/assets/user.png'/>
-                    <Comment.Content>
-                        <Comment.Author as='a'>Matt</Comment.Author>
-                        <Comment.Metadata>
-                            <div>Today at 5:42PM</div>
-                        </Comment.Metadata>
-                        <Comment.Text>How artistic!</Comment.Text>
-                        <Comment.Actions>
-                            <Comment.Action>Reply</Comment.Action>
-                        </Comment.Actions>
-                    </Comment.Content>
-                </Comment>
-                <Comment>
-                    <Comment.Avatar src='/assets/user.png'/>
-                    <Comment.Content>
-                        <Comment.Author as='a'>Joe Henderson</Comment.Author>
-                        <Comment.Metadata>
-                            <div>5 days ago</div>
-                        </Comment.Metadata>
-                        <Comment.Text>Dude, this is awesome. Thanks so much</Comment.Text>
-                        <Comment.Actions>
-                            <Comment.Action>Reply</Comment.Action>
-                        </Comment.Actions>
-                    </Comment.Content>
-                </Comment>
-                <Form reply>
-                    <Form.TextArea/>
-                    <Button
-                        content='Añadir comentario'
-                        labelPosition='left'
-                        icon='edit'
-                        primary
-                    />
-                </Form>
-            </Comment.Group>
-        </Segment>
-    </>
-  )
+interface Props {
+   activityId: string;
 }
 
-export default observer(ActivityDetailedChat)
+const ActivityDetailedChat = ({ activityId }: Props) => {
+   const { commentStore } = useStore();
+
+   useEffect(() => {
+      if (activityId) {
+         commentStore.createHubConnection(activityId);
+      }
+
+      return () => {
+         commentStore.clearComments();
+      };
+   }, [commentStore, activityId]);
+
+   return (
+      <>
+         <Segment
+            textAlign="center"
+            attached="top"
+            inverted
+            color="teal"
+            style={{ border: "none" }}
+         >
+            <Header>Conversa sobre este evento</Header>
+         </Segment>
+         <Segment attached clearing>
+            <Formik
+               onSubmit={(values, { resetForm }) =>
+                  commentStore.addComment(values).then(() => resetForm())
+               }
+               initialValues={{ body: "" }}
+               validationSchema={Yup.object({
+                  body: Yup.string().required(),
+               })}
+            >
+               {({ isSubmitting, isValid, handleSubmit }) => (
+                  <Form className="ui-form">
+                     <Field name="body">
+                        {(props: FieldProps) => (
+                           <div style={{ position: "relative" }}>
+                              <Loader active={isSubmitting} />
+                              <textarea
+                                 placeholder="Escribe tu comentario (Enter para enviar, SHIFT + enter para nueva linea)"
+                                 style={{ width: '100%', height: '70px' }}
+                                 rows={2}
+                                 {...props.field}
+                                 onKeyPress={(e) => {
+                                    if (e.key === "Enter" && e.shiftKey) {
+                                       return;
+                                    }
+                                    if (e.key === "Enter" && !e.shiftKey) {
+                                       e.preventDefault();
+                                       isValid && handleSubmit();
+                                    }
+                                 }}
+                              />
+                           </div>
+                        )}
+                     </Field>
+                  </Form>
+               )}
+            </Formik>
+            <Comment.Group>
+               {commentStore.comments.map(comment => (
+                  <Comment key={comment.id}>
+                     <Comment.Avatar src={comment.image || "/assets/user.png"} />
+                     <Comment.Content>
+                        <Comment.Author as={Link} to={`/perfil/${comment.username}`}>
+                           {comment.displayName}
+                        </Comment.Author>
+                        <Comment.Metadata>
+                           <div>{formatDistanceToNow(comment.createdAt, { locale: es })}</div>
+                        </Comment.Metadata>
+                        <Comment.Text style={{ whiteSpace: "pre-wrap" }}>
+                           {comment.body}
+                        </Comment.Text>
+                     </Comment.Content>
+                  </Comment>
+               ))}
+            </Comment.Group>
+         </Segment>
+      </>
+   );
+};
+
+export default observer(ActivityDetailedChat);
