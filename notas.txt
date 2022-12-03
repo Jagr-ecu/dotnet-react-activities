@@ -35,3 +35,10 @@ REACT
 .NET
 -   SignalR (web sockets) no tiene la habilidad de enviar un header de autorizacion
 -   cors: Access-Control-Allow-Credentials para SignalR
+
+SignalR
+-   there are scaling issues when we want to keep clients connected to single server. When
+    it comes to scaling signalR we need to think about how are w going to maintain our list
+    of connections because signalR does not scale accross multiple servers. We need to 
+    track the connections directly yourself, using something like redis for a distributed
+    cache across each server or persist the connections in a database

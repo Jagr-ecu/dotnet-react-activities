@@ -19,17 +19,19 @@ namespace Persistence
         public DbSet<ActivityAttendee> ActivityAttendees { get; set; }
         public DbSet<Photo> Photos { get; set; }
         public DbSet<Comment> Comments { get; set; }
+        public DbSet<UserFollowing> UserFollowings { get; set; }
         
-
-
+        
         //configuracion de relacion de muchos a muchos
         //se realiza este metodo porque creamos una tabla de relacion de manera manual
-        //y no por la manera convencional que es por entity 
+        //y no por la manera automatica  por entity 
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<ActivityAttendee>(x => x.HasKey(aa => new { aa.AppUserId, aa.ActivityId }));
+            builder.Entity<ActivityAttendee>(x => 
+                x.HasKey(aa => new { aa.AppUserId, aa.ActivityId })
+            );
 
             builder.Entity<ActivityAttendee>()
                 .HasOne(u => u.AppUser)
@@ -37,14 +39,32 @@ namespace Persistence
                 .HasForeignKey(aa => aa.AppUserId);
 
             builder.Entity<ActivityAttendee>()
-            .HasOne(u => u.Activity)
-            .WithMany(a => a.Attendees)
-            .HasForeignKey(aa => aa.ActivityId);
-            //configuracion para borrar en cascada la actvididad pero no el autor
+                .HasOne(u => u.Activity)
+                .WithMany(a => a.Attendees)
+                .HasForeignKey(aa => aa.ActivityId);
+
+            // configuracion para borrar en cascada la actvididad pero no el autor
             builder.Entity<Comment>()
                 .HasOne(a => a.Activity)
                 .WithMany(c => c.Comments)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<UserFollowing>(b => 
+            {
+                b.HasKey(k => new {k.ObserverId, k.TargetId});
+
+                b.HasOne(o => o.Observer)
+                    .WithMany(f => f.Followings)
+                    .HasForeignKey(o => o.ObserverId)              
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                b.HasOne(o => o.Target)
+                    .WithMany(f => f.Followers)
+                    .HasForeignKey(o => o.TargetId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
         }
     }
 }
